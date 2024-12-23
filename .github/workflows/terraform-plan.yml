@@ -12,7 +12,7 @@ concurrency:
 defaults:
   run:
     shell: bash
-    working-directory: ./my
+    working-directory: ./test
 
 permissions: {}
 
