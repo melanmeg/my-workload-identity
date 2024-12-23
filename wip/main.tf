@@ -12,7 +12,7 @@ resource "google_iam_workload_identity_pool_provider" "github_pool_provider" {
     "attribute.repository"       = "assertion.repository"
     "attribute.repository_owner" = "assertion.repository_owner"
   }
-  attribute_condition = "assertion.repository_owner == 'melanmeg'"
+  attribute_condition = "assertion.repository == '${local.repository}'"
   oidc {
     issuer_uri = "https://token.actions.githubusercontent.com"
   }
@@ -20,4 +20,10 @@ resource "google_iam_workload_identity_pool_provider" "github_pool_provider" {
 
 resource "google_service_account" "github" {
   account_id   = "terraform"
+}
+
+resource "google_service_account_iam_member" "workload_identity_member" {
+  service_account_id = google_service_account.github.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_pool.name}/attribute.repository/${local.repository}"
 }
