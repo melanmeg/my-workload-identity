@@ -6,8 +6,6 @@ on:
 
 jobs:
   changes:
-    outputs:
-      tfstates: ${{ steps.filter.outputs.changes }}
     runs-on: ubuntu-latest
     steps:
       - uses: dorny/paths-filter@v2
@@ -15,11 +13,7 @@ jobs:
         with:
           filters: |
             my:
-              - my/**
-            test:
-              - test/**
-            wip:
-              - wip/**
+               - added|modified: '**'
 
   my:
     runs-on: ubuntu-latest
