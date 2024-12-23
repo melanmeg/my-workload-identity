@@ -17,3 +17,7 @@ resource "google_iam_workload_identity_pool_provider" "github_pool_provider" {
     issuer_uri = "https://token.actions.githubusercontent.com"
   }
 }
+
+resource "google_service_account" "github" {
+  account_id   = "terraform"
+}
