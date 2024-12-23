@@ -14,7 +14,6 @@ concurrency:
 defaults:
   run:
     shell: bash
-    working-directory: test-iam
 
 permissions: {}
 
@@ -27,6 +26,26 @@ env:
   TFCMT_VERSION: 4.13.0
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    permissions:
+      pull-requests: read
+
+    outputs:
+      tfstates: ${{ steps.filter.outputs.changes }}
+
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          base: main
+          filters: |
+            my:  "my/**"
+            test:  "test/**"
+            wip:  "wip/**"
+
   terraform-plan:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -35,6 +54,15 @@ jobs:
       id-token: write
       contents: write
       pull-requests: write
+
+    needs: changes
+    strategy:
+      fail-fast: false
+      matrix:
+        tfstates: ${{ fromJSON(needs.changes.outputs.tfstates) }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.tfstates }}
 
     steps:
       - uses: actions/checkout@v4
@@ -70,4 +98,4 @@ jobs:
         id: plan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: tfcmt --config tfcmt.yml plan -patch -- terraform plan -no-color -input=false
+        run: tfcmt --config ${{ github.workspace }}/tfcmt.yml plan -patch -- terraform plan -no-color -input=false
