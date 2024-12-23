@@ -2,10 +2,11 @@ name: "terraform-plan"
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main, develop]
   pull_request:
     branches: [main, develop]
-    types: [opened, synchronize]
-    paths: ["**"]
+    types: [opened, synchronize, closed]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
