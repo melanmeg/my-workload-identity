@@ -16,10 +16,10 @@ defaults:
 permissions: {}
 
 env:
-  PROJECT_ID: test-project-373118
-  PROJECT_NUMBER: 593997455442
-  WORKLOAD_IDENTITY_POOL: my-github-pool
-  WORKLOAD_IDENTITY_POOL_PROVIDER: my-github-pool-provider
+  PROJECT_ID: wip-project-melanmeg
+  PROJECT_NUMBER: 502820203034
+  WORKLOAD_IDENTITY_POOL: github-pool
+  WORKLOAD_IDENTITY_POOL_PROVIDER: github-pool-provider
   TERRAFORM_VERSION: 1.9.2
   TFCMT_VERSION: 4.13.0
 
@@ -40,9 +40,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          clean: false
-          ref: refs/pull/${{ github.event.issue.number }}/merge
+        # with:
+        #   clean: false
+        #   ref: refs/pull/${{ github.event.issue.number }}/merge
 
       - uses: google-github-actions/auth@v2
         with:
