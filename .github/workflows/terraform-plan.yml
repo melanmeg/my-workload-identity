@@ -68,4 +68,4 @@ jobs:
         id: plan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: tfcmt --config tfcmt.yml plan -patch -- terraform plan -no-color -input=false
+        run: tfcmt --config ${{ github.workspace }}/tfcmt.yml plan -patch -- terraform plan -no-color -input=false
