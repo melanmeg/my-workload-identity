@@ -1,5 +1,5 @@
 locals {
-  project_id = "wip-project-melanmeg"
+  project_id = "my-project-melanmeg"
   region     = "asia-northeast1"
   zones      = ["asia-northeast1-a"]
 
