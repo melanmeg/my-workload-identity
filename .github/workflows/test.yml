@@ -1,0 +1,32 @@
+name: "test"
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  changes:
+    outputs:
+      tfstates: ${{ steps.filter.outputs.changes }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            my:
+              - my/**
+            test:
+              - test/**
+            wip:
+              - wip/**
+
+  my:
+    runs-on: ubuntu-latest
+    needs: changes
+    strategy:
+      fail-fast: false
+      matrix:
+        tfstates: ${{ fromJSON(needs.changes.outputs.tfstates) }}
+    steps:
+      - uses: actions/checkout@v4
