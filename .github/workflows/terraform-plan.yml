@@ -28,14 +28,14 @@ env:
 
 jobs:
   changes:
+    outputs:
+      tfstates: ${{ steps.filter.outputs.changes }}
+
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
     permissions:
       pull-requests: read
-
-    outputs:
-      tfstates: ${{ steps.filter.outputs.changes }}
 
     steps:
       - uses: dorny/paths-filter@v2
