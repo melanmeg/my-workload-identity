@@ -3,10 +3,10 @@ name: "terraform-plan"
 on:
   workflow_dispatch:
   push:
-    branches: [main, develop]
+    # branches: [main, develop]
   pull_request:
-    branches: [main, develop]
-    types: [opened, synchronize, closed]
+    # branches: [main, develop]
+    # types: [opened, synchronize, closed]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -15,6 +15,7 @@ concurrency:
 defaults:
   run:
     shell: bash
+    working-directory: ./my
 
 permissions: {}
 
@@ -27,29 +28,7 @@ env:
   TFCMT_VERSION: 4.13.0
 
 jobs:
-  changes:
-    outputs:
-      tfstates: ${{ steps.filter.outputs.changes }}
-
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-
-    permissions:
-      pull-requests: read
-
-    steps:
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          filters: |
-            my:
-              - "my/**"
-            test:
-              - "test/**"
-            wip:
-              - "wip/**"
-
-  my:
+  terraform-plan:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -57,15 +36,6 @@ jobs:
       id-token: write
       contents: write
       pull-requests: write
-
-    needs: changes
-    strategy:
-      fail-fast: false
-      matrix:
-        tfstates: ${{ fromJSON(needs.changes.outputs.tfstates) }}
-    defaults:
-      run:
-        working-directory: ${{ matrix.tfstates }}
 
     steps:
       - uses: actions/checkout@v4
