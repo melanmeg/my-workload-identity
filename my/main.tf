@@ -11,6 +11,12 @@ resource "google_project_iam_member" "owner" {
   member  = "serviceAccount:terraform@wip-project-melanmeg.iam.gserviceaccount.com"
 }
 
+resource "google_project_iam_member" "owner2" {
+  project = "test-project-373118"
+  role    = "roles/owner"
+  member  = "serviceAccount:terraform@wip-project-melanmeg.iam.gserviceaccount.com"
+}
+
 # これはエラーとなるが、残しておく
 # resource "google_service_account_iam_member" "github" {
 #   service_account_id = "projects/my-project-melanmeg/serviceAccounts/terraform@my-project-melanmeg.iam.gserviceaccount.com"
