@@ -17,8 +17,8 @@ defaults:
 permissions: {}
 
 env:
-  PROJECT_ID: test-project-373118
-  PROJECT_NUMBER: 593997455442
+  PROJECT_ID: wip-project-melanmeg
+  PROJECT_NUMBER: 502820203034
   WORKLOAD_IDENTITY_POOL: github-pool
   WORKLOAD_IDENTITY_POOL_PROVIDER: github-pool-provider
   TERRAFORM_VERSION: 1.9.2
