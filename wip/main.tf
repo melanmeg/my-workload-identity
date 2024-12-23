@@ -28,8 +28,14 @@ resource "google_service_account_iam_member" "workload_identity_member" {
   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_pool.name}/attribute.repository/${local.repository}"
 }
 
-resource "google_service_account_iam_member" "owner" {
-  service_account_id = google_service_account.github.name
-  role               = "roles/owner"
-  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_pool.name}/attribute.repository/${local.repository}"
-}
+# resource "google_service_account_iam_member" "owner" {
+#   service_account_id = google_service_account.github.name
+#   role               = "roles/owner"
+#   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_pool.name}/attribute.repository/${local.repository}"
+# }
+
+# resource "google_project_iam_member" "owner" {
+#   project = "my-project-melanmeg"
+#   role    = "roles/owner"
+#   member  = "serviceAccount:${google_service_account.github.email}"
+# }
