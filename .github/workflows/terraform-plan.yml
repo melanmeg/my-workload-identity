@@ -3,10 +3,7 @@ name: "terraform-plan"
 on:
   workflow_dispatch:
   push:
-    # branches: [main, develop]
   pull_request:
-    # branches: [main, develop]
-    # types: [opened, synchronize, closed]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -71,4 +68,4 @@ jobs:
         id: plan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: tfcmt --config ${{ github.workspace }}/tfcmt.yml plan -patch -- terraform plan -no-color -input=false
+        run: tfcmt --config tfcmt.yml plan -patch -- terraform plan -no-color -input=false
