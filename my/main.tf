@@ -17,6 +17,11 @@ resource "google_project_iam_member" "owner2" {
   member  = "serviceAccount:terraform@wip-project-melanmeg.iam.gserviceaccount.com"
 }
 
+resource "google_project_service" "iam_credentials_api" {
+  project = "502820203034"  # プロジェクトIDを指定
+  service = "iamcredentials.googleapis.com"
+}
+
 # これはエラーとなるが、残しておく
 # resource "google_service_account_iam_member" "github" {
 #   service_account_id = "projects/my-project-melanmeg/serviceAccounts/terraform@my-project-melanmeg.iam.gserviceaccount.com"
