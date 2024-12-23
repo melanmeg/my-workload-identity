@@ -5,11 +5,11 @@
 #   force_destroy = true
 # }
 
-resource "google_service_account_iam_member" "owner" {
-  service_account_id = google_service_account.github.name
-  role               = "roles/owner"
-  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_pool.name}/attribute.repository/${local.repository}"
-}
+# resource "google_service_account_iam_member" "owner" {
+#   service_account_id = "projects/${local.wip_project_id}/serviceAccounts/${local.service_account_name}"
+#   role               = "roles/owner"
+#   member             = "principalSet://iam.googleapis.com/${local.workload_identity_pool_name}/attribute.repository/${local.repository}"
+# }
 
 # これはエラーとなるが、残しておく
 # resource "google_service_account_iam_member" "github" {
