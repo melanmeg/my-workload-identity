@@ -20,7 +20,7 @@ permissions: {}
 
 env:
   SERVICE_ACCOUNT: terraform@wip-project-melanmeg.iam.gserviceaccount.com
-  PROJECT_NUMBER: 877597915446
+  PROJECT_NUMBER: 502820203034
   WORKLOAD_IDENTITY_POOL: my-pool
   WORKLOAD_IDENTITY_POOL_PROVIDER: github-pool-provider
   TERRAFORM_VERSION: 1.9.2
