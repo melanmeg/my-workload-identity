@@ -5,6 +5,10 @@ terraform {
       version = "6.1.0"
     }
   }
+  backend "gcs" {
+    bucket  = "wip-project-melanmeg-tfstate"
+    prefix  = "wip-project-melanmeg/state"
+  }
 }
 
 provider "google" {
