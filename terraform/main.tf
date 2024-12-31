@@ -25,13 +25,16 @@ resource "google_service_account" "github" {
   account_id   = "terraform"
 }
 
-resource "google_service_account_iam_member" "workload_identity_member" {
+resource "google_service_account_iam_member" "my-workload-identity_workload_identity_member" {
   service_account_id = google_service_account.github.name
   role               = "roles/iam.workloadIdentityUser"
-  members            = [
-    "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.my_pool.name}/attribute.repository/melanmeg/my-workload-identity",
-    "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.my_pool.name}/attribute.repository/melanmeg/my-k8s-app",
-  ]
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.my_pool.name}/attribute.repository/melanmeg/my-workload-identity"
+}
+
+resource "google_service_account_iam_member" "my-k8s-app_workload_identity_member" {
+  service_account_id = google_service_account.github.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.my_pool.name}/attribute.repository/melanmeg/my-k8s-app"
 }
 
 # resource "google_service_account_iam_member" "owner" {
