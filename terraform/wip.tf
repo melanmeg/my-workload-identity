@@ -10,6 +10,8 @@ resource "google_iam_workload_identity_pool_provider" "github_pool_provider" {
   project                            = local.project_id
   workload_identity_pool_id          = google_iam_workload_identity_pool.my_pool.workload_identity_pool_id
   workload_identity_pool_provider_id = "github-pool-provider"
+  display_name                       = "Github Pool Provider"
+  description                        = "for Github Actions"
   attribute_mapping = {
     "google.subject"             = "assertion.sub"
     "attribute.repository"       = "assertion.repository"
@@ -52,33 +54,42 @@ resource "google_project_iam_member" "owner" {
 # ############################################
 # # External Secrets Pool Provider           #
 # ############################################
-# resource "google_iam_workload_identity_pool_provider" "external_secrets_pool_provider" {
-#   project                            = local.project_id
-#   workload_identity_pool_id          = google_iam_workload_identity_pool.my_pool.workload_identity_pool_id
-#   workload_identity_pool_provider_id = "external-secrets-pool-provider"
-#   attribute_mapping = {
-#     "google.subject"             = "assertion.sub"
-#     "attribute.repository"       = "assertion.repository"
-#     "attribute.repository_owner" = "assertion.repository_owner"
-#   }
-#   # attribute_condition = "assertion.repository == '${local.repository}'"
-#   # oidc {
-#   #   issuer_uri = "https://token.actions.githubusercontent.com"
-#   # }
-# }
+data "local_file" "cluster_jwks" {
+  filename = "${path.module}/cluster-jwks.json"
+}
 
-# resource "google_service_account" "external-secrets" {
-#   account_id   = "external-secrets"
-# }
+resource "google_iam_workload_identity_pool_provider" "home_kubernetes" {
+  project                            = local.project_id
+  workload_identity_pool_id          = google_iam_workload_identity_pool.my_pool.workload_identity_pool_id
+  workload_identity_pool_provider_id = "home-kubernetes-pool-provider"
+  display_name                       = "Home Kubernetes Pool Provider"
+  description                        = "for Kubernetes in the home"
+  attribute_mapping = {
+    "google.subject"                 = "assertion.sub"
+    "attribute.namespace"            = "assertion['kubernetes.io']['namespace']"
+    "attribute.service_account_name" = "assertion['kubernetes.io']['serviceaccount']['name']"
+    "attribute.pod"                  = "assertion['kubernetes.io']['pod']['name']"
+  }
+  attribute_condition = "assertion['kubernetes.io']['namespace'] == 'external-secrets'"
+  oidc {
+    issuer_uri = "https://kubernetes.default.svc.cluster.local"
+    jwks_json  = data.local_file.cluster_jwks.content
+  }
+}
 
-# resource "google_service_account_iam_member" "workload_identity_member" {
-#   service_account_id = google_service_account.external-secrets.name
-#   role               = "roles/iam.workloadIdentityUser"
-#   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.my_pool.name}/attribute.repository/${local.repository}"
-# }
+resource "google_service_account" "home_kubernetes" {
+  account_id   = "external-secrets"
+}
 
-# resource "google_project_iam_member" "owner" {
-#   project = local.project_id
-#   role    = "roles/owner"
-#   member  = "serviceAccount:${google_service_account.external-secrets.email}"
-# }
+# ref: https://cloud.google.com/kubernetes-engine/docs/concepts/workload-identity?hl=ja#principal-id-examples
+resource "google_service_account_iam_member" "ksa_workload_identity_user" {
+  service_account_id = google_service_account.home_kubernetes.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.my_pool.name}/attribute.namespace/external-secrets"
+}
+
+resource "google_project_iam_member" "ksa_owner" {
+  project = "my-project-melanmeg"
+  role    = "roles/owner"
+  member  = "serviceAccount:${google_service_account.home_kubernetes.email}"
+}
