@@ -3,6 +3,7 @@ name: "terraform-apply"
 on:
   workflow_dispatch:
   # issue_comment:
+  #   types: [created]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -11,21 +12,21 @@ concurrency:
 defaults:
   run:
     shell: bash
-    working-directory: ./test
+    working-directory: terraform
 
 permissions: {}
 
 env:
   SERVICE_ACCOUNT: terraform@wip-project-melanmeg.iam.gserviceaccount.com
-  PROJECT_NUMBER: 502820203034
-  WORKLOAD_IDENTITY_POOL: github-pool
+  PROJECT_NUMBER: 877597915446
+  WORKLOAD_IDENTITY_POOL: my-pool
   WORKLOAD_IDENTITY_POOL_PROVIDER: github-pool-provider
   TERRAFORM_VERSION: 1.9.2
   TFCMT_VERSION: 4.13.0
 
 jobs:
   terraform-apply:
-    # if: contains(github.event.comment.body, '/apply ci')
+    # if: contains(github.event.comment.body, '/apply ci') && github.event.issue.pull_request != '' && contains(fromJSON('["melanmeg"]'), github.event.comment.user.login)
 
     runs-on: ubuntu-latest
     timeout-minutes: 30
