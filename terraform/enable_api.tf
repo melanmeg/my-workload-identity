@@ -6,6 +6,7 @@ resource "google_project_service" "enabled_apis" {
     "iamcredentials.googleapis.com",
     "secretmanager.googleapis.com",
     "storage.googleapis.com",
+    "sts.googleapis.com",
   ])
   project = local.project_id
   service = each.key
